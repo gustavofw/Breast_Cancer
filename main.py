@@ -9,6 +9,8 @@ df = pd.read_csv('BreastCancer.csv')
 df = df.drop(columns=['Id']) #Remove ID
 df['Bare.nuclei'] = df['Bare.nuclei'].fillna(df['Bare.nuclei'].median()) #Limpa nulos
 
+features = df.columns[:-1]
+
 #1. GRÁFICO DE DISTRIBUIÇÃO DE CLASSES
 def gerar_distribuicao():
     plt.figure(figsize=(8, 6))
@@ -52,7 +54,24 @@ def gerar_pca():
     plt.savefig('04_pca_analise.png')
     plt.show()
 
+def gerar_boxplots_combinados():
+    """Gera uma matriz 3x3 com todos os boxplots em uma única imagem"""
+    fig, axes = plt.subplots(nrows=3, ncols=3, figsize=(18, 15))
+    axes = axes.flatten()
+
+    for i, col in enumerate(features):
+        sns.boxplot(data=df, x='Class', y=col, ax=axes[i], palette='Set3')
+        axes[i].set_title(f'Distribuição de {col}', fontsize=12)
+        axes[i].set_xlabel('')
+        axes[i].set_ylabel('Escala (1-10)')
+
+    plt.tight_layout()
+    plt.savefig('06_boxplots_combinados.png')
+    plt.show()
+    print("Gráfico 06 (Boxplots Combinados) gerado.")
+
 gerar_distribuicao()
 gerar_violinos()
 gerar_heatmap()
 gerar_pca()
+gerar_boxplots_combinados()
